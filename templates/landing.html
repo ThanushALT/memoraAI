@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memora | AI-Powered Journaling Bot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Memora Logo" id="logo">
+                <span>Memora</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="{{ url_for('login') }}" class="login-btn">Login</a></li>
+                <li><a href="{{ url_for('signup') }}" class="cta-btn">Get Started</a></li>
+            </ul>
+            <div class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                <div class="theme-toggle-track">
+                    <div class="theme-toggle-icon light">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <div class="theme-toggle-icon dark">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="theme-toggle-thumb"></div>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="hero-background">
+                <div class="gradient-bg"></div>
+                <div class="floating-shape shape-1"></div>
+                <div class="floating-shape shape-2"></div>
+                <div class="floating-shape shape-3"></div>
+            </div>
+            <div class="hero-content">
+                <h1 class="parallax-title animate-element fade-up">Journal Smarter with <span class="highlight">AI</span></h1>
+                <div class="tagline-container animate-element fade-up delay-1">
+                    <span class="tagline" id="typing-tagline"></span>
+                    <span class="cursor"></span>
+                </div>
+                <p class="animate-element fade-up delay-1">Memora helps you reflect, track mood patterns, and gain personal insights through AI-powered journaling.</p>
+                
+                <div class="social-proof animate-element fade-up delay-1">
+                    <div class="rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="score">4.9/5</span>
+                    </div>
+                    <div class="users">
+                        <div class="avatars">
+                            <img src="{{ url_for('static', filename='images/avatar1.jpg') }}" alt="User avatar" class="avatar">
+                            <img src="{{ url_for('static', filename='images/avatar2.jpg') }}" alt="User avatar" class="avatar">
+                            <img src="{{ url_for('static', filename='images/avatar3.jpg') }}" alt="User avatar" class="avatar">
+                            <img src="{{ url_for('static', filename='images/avatar4.jpg') }}" alt="User avatar" class="avatar">
+                        </div>
+                        <p>Loved by 1,500+ daily journalers</p>
+                    </div>
+                </div>
+                
+                <div class="hero-cta">
+                    <a href="#pricing" class="primary-btn animate-element fade-scale delay-2" id="cta-primary">Start Journaling</a>
+                    <a href="#" class="secondary-btn animate-element fade-scale delay-2" id="cta-secondary">Try for Free</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='images/hero-image.png') }}" alt="Memora App Interface">
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features">
+            <div class="section-header">
+                <h2>Features that transform your journaling</h2>
+                <p>Discover how Memora makes journaling more insightful and meaningful</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Receive personalized reflections and insights based on your entries.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Private & Secure</h3>
+                    <p>Your thoughts are encrypted and protected. Only you have access.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Daily Prompts</h3>
+                    <p>Never face a blank page with our thoughtfully crafted journal prompts.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Mood Tracking</h3>
+                    <p>Visualize your emotional patterns and growth over time.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials">
+            <div class="section-header">
+                <h2>What Our Users Say</h2>
+                <p>Join thousands who have transformed their journaling practice</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonial">
+                    <div class="quote">
+                        <p>"Memora has helped me understand my emotional patterns in ways I never could before. The AI insights are surprisingly accurate."</p>
+                    </div>
+                    <div class="author">
+                        <img src="{{ url_for('static', filename='images/avatar1.jpg') }}" alt="Sarah T.">
+                        <div class="author-info">
+                            <h4>Sarah T.</h4>
+                            <p>Daily user for 8 months</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="quote">
+                        <p>"As someone who struggled with consistent journaling, Memora's gentle reminders and easy interface have made it a daily habit I actually look forward to."</p>
+                    </div>
+                    <div class="author">
+                        <img src="{{ url_for('static', filename='images/avatar2.jpg') }}" alt="Michael D.">
+                        <div class="author-info">
+                            <h4>Michael D.</h4>
+                            <p>Daily user for 3 months</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="quote">
+                        <p>"The insights I get from Memora have been genuinely helpful for my mental health journey. It's like having a therapist in my pocket."</p>
+                    </div>
+                    <div class="author">
+                        <img src="{{ url_for('static', filename='images/avatar3.jpg') }}" alt="Jamie L.">
+                        <div class="author-info">
+                            <h4>Jamie L.</h4>
+                            <p>Daily user for 5 months</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="quote">
+                        <p>"I've tried many journaling apps, but Memora stands out with its thoughtful AI that actually helps me process my thoughts in new ways."</p>
+                    </div>
+                    <div class="author">
+                        <img src="{{ url_for('static', filename='images/avatar4.jpg') }}" alt="Alex K.">
+                        <div class="author-info">
+                            <h4>Alex K.</h4>
+                            <p>Premium user</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-arrow prev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
+                <div class="slider-dots"></div>
+                <button class="slider-arrow next" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Start your journaling journey today</p>
+            </div>
+            <div class="pricing-container">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <div class="pricing-badge">Limited Time Offer</div>
+                        <h3>Premium Access</h3>
+                        <div class="price">
+                            <span class="amount">$20</span>
+                            <span class="period">once</span>
+                        </div>
+                        <p class="pricing-subtitle">Lifetime access</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Unlimited journal entries</li>
+                        <li><i class="fas fa-check"></i> AI-powered reflections</li>
+                        <li><i class="fas fa-check"></i> Mood tracking analytics</li>
+                        <li><i class="fas fa-check"></i> Full entry history</li>
+                        <li><i class="fas fa-check"></i> Cross-device syncing</li>
+                        <li><i class="fas fa-check"></i> Premium support</li>
+                    </ul>
+                    <a href="{{ url_for('signup') }}" class="primary-btn premium-cta">Buy Premium ($20)</a>
+                </div>
+            </div>
+            <div class="free-trial">
+                <p>One-time payment, lifetime access. <a href="#">View full feature comparison</a></p>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Everything you need to know about Memora</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How do I get started with Memora?</h3>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Getting started is easy! Just sign up for a free 7-day trial, and you'll be guided through the process of creating your first journal entry. You can start with a simple reflection, or use one of our curated prompts to inspire your writing.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What features are included in the $2/month plan?</h3>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our $2/month plan includes everything you need for a complete journaling experience: unlimited entries, AI-powered insights, mood tracking, custom prompts, full entry history, cross-device syncing, and premium customer support.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my journal data private and secure?</h3>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely. Your privacy is our top priority. All journal entries are encrypted end-to-end, meaning only you can access your content. We never read your journal entries, and your data is never sold or shared with third parties.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I export my journal entries?</h3>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, you can export all your journal entries at any time in multiple formats, including PDF and plain text. Your data always belongs to you, and you can download it or transfer it whenever you wish.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What makes Memora different from other journaling apps?</h3>
+                        <span class="faq-icon"><i class="fas fa-plus"></i></span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Memora stands out with its thoughtful AI that provides personalized insights rather than generic feedback. Our mood tracking gives you valuable patterns over time, and our intuitive design makes journaling feel effortless. We've focused on creating an experience that helps you develop meaningful self-reflection.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section id="final-cta">
+            <div class="cta-content">
+                <h2>Start Your Journaling Journey Today</h2>
+                <p>Join thousands of people discovering deeper insights through AI-powered journaling.</p>
+                <div class="cta-buttons">
+                    <a href="#pricing" class="primary-btn">Start Journaling</a>
+                    <a href="#" class="secondary-btn">Learn More</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Memora Logo">
+                <p>© 2025 Memora. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#pricing" class="floating-cta" id="floating-cta">
+        <span>Start Journaling</span>
+        <i class="fas fa-arrow-right"></i>
+    </a>
+
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+{% extends "layout.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <h2 class="settings-title">Settings<span class="settings-subtitle">Customize your experience</span></h2>
+    
+    <div class="settings-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48 2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48 2.83-2.83"/></svg>
+            </div>
+            <h3>App Appearance</h3>
+        </div>
+        
+        <div class="setting-item">
+            <label>Theme:</label>
+            <div class="theme-selector">
+                <div class="theme-previews">
+                    <div class="theme-preview" data-theme="default">
+                        <div class="preview-color primary"></div>
+                        <div class="preview-label">Default Blue</div>
+                    </div>
+                    <div class="theme-preview" data-theme="purple">
+                        <div class="preview-color primary"></div>
+                        <div class="preview-label">Royal Purple</div>
+                    </div>
+                    <div class="theme-preview" data-theme="green">
+                        <div class="preview-color primary"></div>
+                        <div class="preview-label">Forest Green</div>
+                    </div>
+                    <div class="theme-preview" data-theme="dark">
+                        <div class="preview-color primary"></div>
+                        <div class="preview-label">Dark Mode</div>
+                    </div>
+                    <div class="theme-preview" data-theme="sunset">
+                        <div class="preview-color primary"></div>
+                        <div class="preview-label">Sunset Orange</div>
+                    </div>
+                </div>
+                <select id="themeSelect" class="theme-select hidden">
+                    <option value="default">Default Blue</option>
+                    <option value="purple">Royal Purple</option>
+                    <option value="green">Forest Green</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="sunset">Sunset Orange</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <label>Font Size:</label>
+            <div class="font-size-controls">
+                <button class="font-size-btn" data-size="small">
+                    <span class="font-size-preview">A</span>
+                    <span class="font-size-label">Small</span>
+                </button>
+                <button class="font-size-btn" data-size="medium">
+                    <span class="font-size-preview">A</span>
+                    <span class="font-size-label">Medium</span>
+                </button>
+                <button class="font-size-btn" data-size="large">
+                    <span class="font-size-preview">A</span>
+                    <span class="font-size-label">Large</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <h3>Music & Ambience</h3>
+        </div>
+        
+        <div class="setting-item">
+            <label>Background Music:</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="musicToggle">
+                <span class="switch-slider">
+                    <span class="switch-on">ON</span>
+                    <span class="switch-off">OFF</span>
+                </span>
+            </label>
+            <span class="setting-description">Play ambient music while writing</span>
+        </div>
+
+        <div id="musicSettings" class="music-settings-panel">
+            <div class="setting-item">
+                <label>Music Type:</label>
+                <div class="music-selector">
+                    <div class="music-options">
+                        <div class="music-option" data-music="cafe">
+                            <div class="music-icon">☕</div>
+                            <div class="music-label">Café Ambience</div>
+                        </div>
+                        <div class="music-option" data-music="nature">
+                            <div class="music-icon">🌿</div>
+                            <div class="music-label">Nature Sounds</div>
+                        </div>
+                        <div class="music-option" data-music="rain">
+                            <div class="music-icon">🌧️</div>
+                            <div class="music-label">Rain Sounds</div>
+                        </div>
+                        <div class="music-option" data-music="waves">
+                            <div class="music-icon">🌊</div>
+                            <div class="music-label">Ocean Waves</div>
+                        </div>
+                    </div>
+                    <select id="musicSelect" class="music-select hidden">
+                        <option value="cafe">Café Ambience</option>
+                        <option value="nature">Nature Sounds</option>
+                        <option value="rain">Rain Sounds</option>
+                        <option value="waves">Ocean Waves</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="setting-item volume-control-container">
+                <label>Volume:</label>
+                <div class="volume-control-wrapper">
+                    <div class="volume-icon low">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </div>
+                    <input type="range" id="volumeControl" min="0" max="100" value="50" class="volume-slider">
+                    <div class="volume-icon high">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                    </div>
+                    <span class="volume-value">50%</span>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label>Test Audio:</label>
+                <div class="audio-test-container">
+                    <button id="testAudio" class="btn test-audio-btn">
+                        <span class="play-icon">▶</span>
+                        <span class="stop-icon">◼</span>
+                        <span class="btn-text">Test Audio</span>
+                    </button>
+                    <div id="audioStatus" class="audio-status"></div>
+                </div>
+            </div>
+
+            <div class="visualizer-container">
+                <div class="visualizer-header">
+                    <h4>Music Visualizer</h4>
+                    <label class="toggle-switch visualizer-toggle">
+                        <input type="checkbox" id="visualizerToggle" checked>
+                        <span class="switch-slider small">
+                            <span class="switch-on">ON</span>
+                            <span class="switch-off">OFF</span>
+                        </span>
+                    </label>
+                </div>
+                <div class="visualizer-wrapper">
+                    <canvas id="musicVisualizer"></canvas>
+                    <div class="visualizer-controls">
+                        <div class="visualizer-style-selector">
+                            <button class="visualizer-style-btn active" data-style="bars">Bars</button>
+                            <button class="visualizer-style-btn" data-style="wave">Wave</button>
+                            <button class="visualizer-style-btn" data-style="circle">Circle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
+            <h3>About</h3>
+        </div>
+        <div class="about-content">
+            <div class="app-info">
+                <div class="app-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4V2"/><path d="M14 22v-2"/><path d="M10 4V2"/><path d="M10 22v-2"/><path d="M6 14H4"/><path d="M20 14h-2"/><path d="M6 10H4"/><path d="M20 10h-2"/><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+                </div>
+                <div class="app-details">
+                    <h4 class="app-name">Immersive Writer</h4>
+                    <p class="app-version">Version 2.0.4</p>
+                    <p class="app-copyright">© 2025 Creative Writing Labs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Theme selection with visual previews
+    const themeSelect = document.getElementById('themeSelect');
+    const themePreviews = document.querySelectorAll('.theme-preview');
+    const currentTheme = localStorage.getItem('theme') || 'default';
+    
+    // Set initial theme
+    document.body.setAttribute('data-theme', currentTheme);
+    themeSelect.value = currentTheme;
+    
+    // Highlight active theme preview
+    themePreviews.forEach(preview => {
+        if (preview.dataset.theme === currentTheme) {
+            preview.classList.add('active');
+        }
+        
+        preview.addEventListener('click', function() {
+            const theme = this.dataset.theme;
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeSelect.value = theme;
+            
+            // Update active state
+            themePreviews.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Font size controls with visual feedback
+    const fontSizeButtons = document.querySelectorAll('.font-size-btn');
+    const currentSize = localStorage.getItem('fontSize') || 'medium';
+    
+    // Set initial font size
+    document.body.classList.add(`font-${currentSize}`);
+    document.querySelector(`[data-size="${currentSize}"]`).classList.add('active');
+    
+    fontSizeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const size = this.dataset.size;
+            
+            // Remove all font size classes and add the selected one
+            document.body.classList.remove('font-small', 'font-medium', 'font-large');
+            document.body.classList.add(`font-${size}`);
+            
+            localStorage.setItem('fontSize', size);
+            
+            // Update active state
+            fontSizeButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Music settings
+    const musicToggle = document.getElementById('musicToggle');
+    const musicSettings = document.getElementById('musicSettings');
+    const musicSelect = document.getElementById('musicSelect');
+    const musicOptions = document.querySelectorAll('.music-option');
+    const volumeControl = document.getElementById('volumeControl');
+    const volumeValue = document.querySelector('.volume-value');
+    const testButton = document.getElementById('testAudio');
+    const audioStatus = document.getElementById('audioStatus');
+    const visualizerToggle = document.getElementById('visualizerToggle');
+    const visualizerStyleBtns = document.querySelectorAll('.visualizer-style-btn');
+    
+    // Music and audio state
+    let testPlayer = null;
+    let audioContext = null;
+    let analyzer = null;
+    let mediaSource = null;
+    let visualizerAnimationFrame = null;
+    
+    // Initialize visualizer canvas
+    const visualizerCanvas = document.getElementById('musicVisualizer');
+    const canvasCtx = visualizerCanvas.getContext('2d');
+    let visualizerStyle = localStorage.getItem('visualizerStyle') || 'bars';
+
+    // Set canvas size to match container
+    function resizeCanvas() {
+        const visualizerWrapper = document.querySelector('.visualizer-wrapper');
+        visualizerCanvas.width = visualizerWrapper.clientWidth;
+        visualizerCanvas.height = visualizerWrapper.clientHeight;
+    }
+    
+    // Load saved settings
+    const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
+    const visualizerEnabled = localStorage.getItem('visualizerEnabled') !== 'false'; // Default to true
+    
+    musicToggle.checked = musicEnabled;
+    musicSettings.classList.toggle('visible', musicEnabled);
+    visualizerToggle.checked = visualizerEnabled;
+    
+    // Set active visualizer style
+    visualizerStyleBtns.forEach(btn => {
+        if (btn.dataset.style === visualizerStyle) {
+            btn.classList.add('active');
+        }
+        
+        btn.addEventListener('click', function() {
+            visualizerStyle = this.dataset.style;
+            localStorage.setItem('visualizerStyle', visualizerStyle);
+            
+            visualizerStyleBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Set selected music type
+    const selectedMusic = localStorage.getItem('selectedMusic') || 'nature';
+    musicSelect.value = selectedMusic;
+    
+    // Set active music option
+    musicOptions.forEach(option => {
+        if (option.dataset.music === selectedMusic) {
+            option.classList.add('active');
+        }
+        
+        option.addEventListener('click', function() {
+            const musicType = this.dataset.music;
+            musicSelect.value = musicType;
+            localStorage.setItem('selectedMusic', musicType);
+            
+            // Update active state
+            musicOptions.forEach(o => o.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Stop any playing test audio
+            if (testPlayer) {
+                stopTestAudio();
+            }
+        });
+    });
+    
+    // Set volume
+    volumeControl.value = localStorage.getItem('musicVolume') || 50;
+    volumeValue.textContent = `${volumeControl.value}%`;
+
+    // Toggle music settings visibility with animation
+    musicToggle.addEventListener('change', function() {
+        const isEnabled = this.checked;
+        localStorage.setItem('musicEnabled', isEnabled.toString());
+        
+        if (isEnabled) {
+            musicSettings.classList.add('visible');
+            setTimeout(() => {
+                resizeCanvas();
+            }, 300); // Wait for animation to complete
+        } else {
+            musicSettings.classList.remove('visible');
+            // Stop any playing test audio
+            if (testPlayer) {
+                stopTestAudio();
+            }
+        }
+
+        // Dispatch custom event to notify music state change
+        window.dispatchEvent(new CustomEvent('musicSettingsChanged', {
+            detail: { enabled: isEnabled }
+        }));
+    });
+
+    // Visualizer toggle
+    visualizerToggle.addEventListener('change', function() {
+        const isEnabled = this.checked;
+        localStorage.setItem('visualizerEnabled', isEnabled.toString());
+        
+        if (!isEnabled && visualizerAnimationFrame) {
+            cancelAnimationFrame(visualizerAnimationFrame);
+            clearCanvas();
+        } else if (isEnabled && testPlayer && testPlayer.paused === false) {
+            // Restart visualizer if audio is playing
+            startVisualizer();
+        }
+    });
+
+    // Handle volume change with real-time update
+    volumeControl.addEventListener('input', function() {
+        const volume = this.value;
+        localStorage.setItem('musicVolume', volume);
+        volumeValue.textContent = `${volume}%`;
+        
+        if (testPlayer) {
+            testPlayer.volume = volume / 100;
+        }
+    });
+
+    // Audio functionality
+    function stopTestAudio() {
+        if (!testPlayer) return;
+        
+        testPlayer.pause();
+        testPlayer = null;
+        testButton.classList.remove('playing');
+        audioStatus.textContent = '';
+        audioStatus.classList.remove('status-playing', 'status-error');
+        
+        // Stop visualizer
+        if (visualizerAnimationFrame) {
+            cancelAnimationFrame(visualizerAnimationFrame);
+            visualizerAnimationFrame = null;
+            clearCanvas();
+        }
+        
+        // Clean up audio context
+        if (audioContext) {
+            if (audioContext.state !== 'closed') {
+                audioContext.close().catch(console.error);
+            }
+            audioContext = null;
+            analyzer = null;
+            mediaSource = null;
+        }
+    }
+    
+    function clearCanvas() {
+        if (canvasCtx) {
+            canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+        }
+    }
+
+    // Test audio button
+    testButton.addEventListener('click', function() {
+        if (testPlayer) {
+            stopTestAudio();
+            return;
+        }
+
+        const selectedMusic = musicSelect.value;
+        audioStatus.textContent = 'Loading...';
+        audioStatus.classList.add('status-loading');
+        testButton.classList.add('loading');
+        
+        testPlayer = new Audio(`/static/music/${selectedMusic}.mp3`);
+        testPlayer.volume = volumeControl.value / 100;
+        
+        testPlayer.oncanplaythrough = () => {
+            audioStatus.textContent = 'Playing';
+            audioStatus.classList.remove('status-loading');
+            audioStatus.classList.add('status-playing');
+            testButton.classList.remove('loading');
+            testButton.classList.add('playing');
+            
+            testPlayer.play().then(() => {
+                // Initialize audio context and analyzer for visualizer
+                if (visualizerToggle.checked) {
+                    startVisualizer();
+                }
+            }).catch(err => {
+                console.error("Audio playback error:", err);
+                audioStatus.textContent = 'Playback error!';
+                audioStatus.classList.remove('status-loading', 'status-playing');
+                audioStatus.classList.add('status-error');
+                testButton.classList.remove('loading', 'playing');
+            });
+        };
+        
+        testPlayer.onerror = () => {
+            audioStatus.textContent = 'Error loading audio!';
+            audioStatus.classList.remove('status-loading', 'status-playing');
+            audioStatus.classList.add('status-error');
+            testButton.classList.remove('loading', 'playing');
+            testPlayer = null;
+        };
+        
+        testPlayer.onended = () => {
+            stopTestAudio();
+        };
+    });
+
+    // Music visualizer implementation
+    function startVisualizer() {
+        if (!testPlayer) return;
+        
+        // Create audio context if needed
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyzer = audioContext.createAnalyser();
+            
+            // Configure analyzer
+            analyzer.fftSize = 256;
+            const bufferLength = analyzer.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            // Connect audio to analyzer
+            mediaSource = audioContext.createMediaElementSource(testPlayer);
+            mediaSource.connect(analyzer);
+            analyzer.connect(audioContext.destination);
+            
+            // Draw function based on selected style
+            function draw() {
+                if (!visualizerToggle.checked || !testPlayer || testPlayer.paused) {
+                    cancelAnimationFrame(visualizerAnimationFrame);
+                    clearCanvas();
+                    return;
+                }
+                
+                visualizerAnimationFrame = requestAnimationFrame(draw);
+                
+                // Get frequency data
+                analyzer.getByteFrequencyData(dataArray);
+                
+                // Clear canvas
+                canvasCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+                
+                // Draw based on selected style
+                switch (visualizerStyle) {
+                    case 'bars':
+                        drawBars(dataArray, bufferLength);
+                        break;
+                    case 'wave':
+                        drawWave(dataArray, bufferLength);
+                        break;
+                    case 'circle':
+                        drawCircle(dataArray, bufferLength);
+                        break;
+                }
+            }
+            
+            function drawBars(dataArray, bufferLength) {
+                const barWidth = (visualizerCanvas.width / bufferLength) * 2.5;
+                let x = 0;
+                
+                for (let i = 0; i < bufferLength; i++) {
+                    const barHeight = (dataArray[i] / 255) * visualizerCanvas.height;
+                    
+                    // Create gradient for bars
+                    const gradient = canvasCtx.createLinearGradient(0, visualizerCanvas.height, 0, 0);
+                    gradient.addColorStop(0, 'rgba(0, 123, 255, 0.5)');
+                    gradient.addColorStop(1, 'rgba(110, 223, 255, 0.8)');
+                    
+                    canvasCtx.fillStyle = gradient;
+                    canvasCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth - 1, barHeight);
+                    
+                    x += barWidth;
+                }
+            }
+            
+            function drawWave(dataArray, bufferLength) {
+                canvasCtx.lineWidth = 2;
+                canvasCtx.strokeStyle = 'rgb(0, 153, 255)';
+                canvasCtx.beginPath();
+                
+                const sliceWidth = visualizerCanvas.width / bufferLength;
+                let x = 0;
+                
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = v * (visualizerCanvas.height / 2);
+                    
+                    if (i === 0) {
+                        canvasCtx.moveTo(x, y);
+                    } else {
+                        canvasCtx.lineTo(x, y);
+                    }
+                    
+                    x += sliceWidth;
+                }
+                
+                canvasCtx.lineTo(visualizerCanvas.width, visualizerCanvas.height / 2);
+                canvasCtx.stroke();
+                
+                // Add glow effect
+                canvasCtx.shadowBlur = 10;
+                canvasCtx.shadowColor = 'rgba(0, 153, 255, 0.5)';
+            }
+            
+            function drawCircle(dataArray, bufferLength) {
+                const centerX = visualizerCanvas.width / 2;
+                const centerY = visualizerCanvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.8;
+                
+                canvasCtx.beginPath();
+                canvasCtx.arc(centerX, centerY, radius * 0.1, 0, Math.PI * 2);
+                canvasCtx.fillStyle = 'rgba(0, 123, 255, 0.8)';
+                canvasCtx.fill();
+                
+                for (let i = 0; i < bufferLength; i++) {
+                    const amplitude = dataArray[i] / 255;
+                    const barHeight = radius * amplitude;
+                    const angle = (i * 2 * Math.PI) / bufferLength;
+                    
+                    const x1 = centerX + Math.cos(angle) * radius * 0.2;
+                    const y1 = centerY + Math.sin(angle) * radius * 0.2;
+                    const x2 = centerX + Math.cos(angle) * (radius * 0.2 + barHeight);
+                    const y2 = centerY + Math.sin(angle) * (radius * 0.2 + barHeight);
+                    
+                    canvasCtx.beginPath();
+                    canvasCtx.moveTo(x1, y1);
+                    canvasCtx.lineTo(x2, y2);
+                    canvasCtx.lineWidth = 2;
+                    
+                    // Gradient based on amplitude
+                    const hue = 200 + amplitude * 60; // Blue to purple
+                    canvasCtx.strokeStyle = `hsla(${hue}, 100%, 50%, 0.8)`;
+                    canvasCtx.stroke();
+                }
+            }
+            
+            // Start animation
+            draw();
+        }
+    }
+    
+    // Handle window resize for the visualizer
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Initial canvas setup
+    setTimeout(resizeCanvas, 0);
+});
+</script>
+{% endblock %}

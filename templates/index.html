@@ -1,0 +1,275 @@
+{% extends "layout.html" %}
+
+{% block title %}Memora - Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-modal-content">
+            <div class="payment-modal-header">
+                <div class="payment-logo">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h2>Unlock Premium Access</h2>
+                <p class="payment-subtitle">Your journaling journey awaits</p>
+            </div>
+            
+            <div class="payment-benefits">
+                <h3>Premium Benefits:</h3>
+                <ul>
+                    <li><i class="fas fa-check"></i> <span>Unlimited AI-powered analysis</span></li>
+                    <li><i class="fas fa-check"></i> <span>Advanced mood tracking</span></li>
+                    <li><i class="fas fa-check"></i> <span>Custom writing prompts</span></li>
+                    <li><i class="fas fa-check"></i> <span>Cloud backup & sync</span></li>
+                    <li><i class="fas fa-check"></i> <span>Ad-free experience</span></li>
+                </ul>
+            </div>
+            
+            <div class="payment-price">
+                <div class="price-badge">One-time payment</div>
+                <div class="price-amount">$2</div>
+                <div class="price-description">Get lifetime access to all premium features</div>
+            </div>
+            
+            <div class="payment-action">
+                <button id="completePaymentBtn" class="payment-button">
+                    <i class="fas fa-lock"></i> Complete Payment
+                </button>
+            </div>
+            
+            <div class="payment-footer">
+                <p>Secure payment • 100% satisfaction guarantee</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-header">
+        <h2>Journal Analytics</h2>
+        <button onclick="refreshDashboard()" class="refresh-btn">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <button>
+            <a href="https://tinyurl.com/therapalchat" class="therapal-btn" target="_blank">Launch Therapal</a>
+        </button>
+        
+    </div>
+
+    <!-- Mood Summary Section -->
+    <div class="mood-analysis-section">
+        <div class="mood-overview">
+            <h3>Mood Trends</h3>
+            <div class="mood-chart-container">
+                <canvas id="moodChart"></canvas>
+            </div>
+        </div>
+        <div class="mood-stats">
+            <h3>Emotional Insights</h3>
+            <div id="moodStats" class="mood-stats-grid">
+                <!-- Mood stats will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal List Section -->
+    <div class="journal-overview">
+        <h3>Recent Journals</h3>
+        <div class="journal-list-container">
+            <div id="journalList" class="journal-grid">
+                <!-- Journals will be populated here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+let moodChart = null;
+const stripe = Stripe('pk_test_51RKlzKRuTBMEyxQn8oG2AZa9ZzrRiaEJFuL1rm1fKPsEA2CuaP7beqaMMiDFCJKsRiSkW8grIMlYwBWZA44BOQx2004xxcUw0S'); // Replace with your actual publishable key
+
+// Payment modal handling
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentModalHandler = function() {
+        // Check payment status from server
+        fetch('/check_payment_status')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Payment status check:', data);
+                if (!data.hasPaid) {
+                    document.getElementById('paymentModal').classList.add('active');
+                    // Prevent scrolling on the body while modal is open
+                    document.body.style.overflow = 'hidden';
+                }
+            })
+            .catch(error => {
+                console.error('Error checking payment status:', error);
+            });
+    };
+    
+    // Run payment check on load
+    paymentModalHandler();
+    
+    // Payment button event listener - Updated for Stripe checkout
+    document.getElementById('completePaymentBtn').addEventListener('click', function() {
+        // Show processing state
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        
+        // Create a Stripe checkout session
+        fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+                // Reset button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-lock"></i> Complete Payment';
+            } else {
+                // Redirect to Stripe checkout
+                return stripe.redirectToCheckout({ sessionId: data.id });
+            }
+        })
+        .then(result => {
+            if (result?.error) {
+                alert('Error: ' + result.error.message);
+                // Reset button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-lock"></i> Complete Payment';
+            }
+        })
+        .catch(error => {
+            console.error('Error creating checkout session:', error);
+            alert('Payment processing failed. Please try again.');
+            // Reset button
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-lock"></i> Complete Payment';
+        });
+    });
+    
+    // Also fetch journal analytics
+    fetchJournalAnalytics();
+});
+
+function showPaymentSuccess() {
+    const successNotification = document.createElement('div');
+    successNotification.className = 'payment-success-notification';
+    successNotification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>Payment successful! You now have premium access.</span>
+    `;
+    document.body.appendChild(successNotification);
+    
+    setTimeout(() => {
+        successNotification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        successNotification.classList.remove('show');
+        setTimeout(() => successNotification.remove(), 500);
+    }, 4000);
+}
+
+function refreshDashboard() {
+    fetchJournalAnalytics();
+    const refreshBtn = document.querySelector('.refresh-btn i');
+    refreshBtn.classList.add('spinning');
+    setTimeout(() => refreshBtn.classList.remove('spinning'), 1000);
+}
+
+function fetchJournalAnalytics() {
+    fetch('/analyze_journals')
+        .then(response => response.json())
+        .then(data => {
+            updateMoodChart(data.moodAnalysis);
+            updateJournalList(data.journals);
+            updateMoodStats(data.moodStats);
+        })
+        .catch(error => console.error('Error fetching analytics:', error));
+}
+
+function updateMoodChart(moodData) {
+    const ctx = document.getElementById('moodChart').getContext('2d');
+    
+    if (moodChart) {
+        moodChart.destroy();
+    }
+    
+    moodChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(moodData),
+            datasets: [{
+                data: Object.values(moodData),
+                backgroundColor: [
+                    '#4361ee', '#3a0ca3', '#7209b7', 
+                    '#f72585', '#4895ef', '#06d6a0'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            family: "'Inter', sans-serif"
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateJournalList(journals) {
+    const container = document.getElementById('journalList');
+    container.innerHTML = '';
+    
+    journals.forEach(journal => {
+        const card = document.createElement('div');
+        card.className = 'journal-card';
+        card.innerHTML = `
+            <div class="journal-card-header">
+                <h4>${journal.title}</h4>
+                <span class="journal-date">${journal.date}</span>
+            </div>
+            <div class="journal-stats">
+                <span><i class="fas fa-align-left"></i> ${journal.wordCount} words</span>
+                <span><i class="fas fa-clock"></i> ${journal.readingTime} min read</span>
+            </div>
+            <div class="journal-mood">
+                <span class="mood-indicator" style="background-color: var(--${journal.primaryMood.toLowerCase()}-color)">
+                    ${journal.primaryMood}
+                </span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function updateMoodStats(stats) {
+    const container = document.getElementById('moodStats');
+    container.innerHTML = '';
+    
+    stats.forEach(stat => {
+        const statCard = document.createElement('div');
+        statCard.className = 'mood-stat-card';
+        statCard.innerHTML = `
+            <div class="stat-value">${stat.value}</div>
+            <div class="stat-label">${stat.label}</div>
+        `;
+        container.appendChild(statCard);
+    });
+}
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', fetchJournalAnalytics);
+</script>
+{% endblock %}

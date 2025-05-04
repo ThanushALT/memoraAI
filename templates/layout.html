@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Memora{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+    <script src='https://unpkg.com/tesseract.js@4.1.1/dist/tesseract.min.js'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="welcomeOverlay" class="welcome-overlay">
+        <div class="welcome-content">
+            <div class="animated-title">
+                <span class="letter">m</span>
+                <span class="letter">e</span>
+                <span class="letter">m</span>
+                <span class="letter">o</span>
+                <span class="letter">r</span>
+                <span class="letter">a</span>
+            </div>
+            <div class="welcome-tagline">Journaling Made Smarter</div>
+        </div>
+    </div>
+    
+    <div id="contentContainer" class="content-container">
+        <script>
+            // Initialize theme and font size from localStorage
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentTheme = localStorage.getItem('theme') || 'default';
+                const currentSize = localStorage.getItem('fontSize') || 'medium';
+                document.body.setAttribute('data-theme', currentTheme);
+                document.body.className = `font-${currentSize}`;
+            });
+        </script>
+        <div class="main-container">
+            <div class="sidebar" id="sidebar">
+                <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle Sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1 class="sidebar-title">Memora</h1>
+                <nav>
+                    <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.path == '/dashboard' %}active{% endif %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="/write" class="nav-item {% if request.path == '/write' %}active{% endif %}">
+                        <i class="fas fa-pen"></i> Write Journal
+                    </a>
+                    <a href="/journals" class="nav-item {% if request.path == '/journals' %}active{% endif %}">
+                        <i class="fas fa-book"></i> My Journals
+                    </a>
+                    <a href="/settings" class="nav-item {% if request.path == '/settings' %}active{% endif %}">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </nav>
+                
+                <!-- User menu section -->
+                <div class="user-section">
+                    {% if session.get('user_id') %}
+                    <button id="userMenuToggle" class="user-menu-toggle">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-info">
+                            <span class="username">{{ session.get('username') }}</span>
+                        </div>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div id="userMenu" class="user-menu">
+                        <a href="/settings" class="user-menu-item">
+                            <i class="fas fa-user-cog"></i> Profile
+                        </a>
+                        <div id="premiumStatus" class="premium-status">
+                            <i class="fas fa-crown"></i>
+                            <span class="premium-label">Checking status...</span>
+                        </div>
+                        <a href="#" id="logoutBtn" class="user-menu-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                        <a href="#" id="deleteAccountBtn" class="user-menu-item delete-account">
+                            <i class="fas fa-user-slash"></i> Delete Account
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="auth-links">
+                        <a href="{{ url_for('login') }}" class="nav-item">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                        <a href="{{ url_for('signup') }}" class="nav-item">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if this is a fresh page load or a tab switch
+            const hasVisited = localStorage.getItem('hasVisitedMemora');
+            const isPageRefresh = !document.hidden && (!hasVisited || performance.navigation.type === 1);
+            
+            if (isPageRefresh) {
+                // Show animation only on fresh visit or page refresh
+                setTimeout(() => {
+                    document.getElementById('welcomeOverlay').classList.add('fade-out');
+                    document.getElementById('contentContainer').classList.add('visible');
+                }, 2500);
+                localStorage.setItem('hasVisitedMemora', 'true');
+            } else {
+                // Skip animation for tab switches
+                document.getElementById('welcomeOverlay').classList.add('fade-out');
+                document.getElementById('contentContainer').classList.add('visible');
+            }
+
+            // Sidebar toggle functionality
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const content = document.querySelector('.content');
+            
+            // Load saved state
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (sidebarCollapsed) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('expanded');
+            }
+            
+            // Add click event listener
+            sidebarToggle?.addEventListener('click', function(e) {
+                e.preventDefault();
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('expanded');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                window.dispatchEvent(new Event('resize'));
+            });
+            
+            // User menu toggle
+            const userMenuToggle = document.getElementById('userMenuToggle');
+            const userMenu = document.getElementById('userMenu');
+            
+            if (userMenuToggle && userMenu) {
+                userMenuToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    userMenu.classList.toggle('active');
+                    
+                    // Close when clicking outside
+                    document.addEventListener('click', function closeMenu(e) {
+                        if (!userMenu.contains(e.target) && !userMenuToggle.contains(e.target)) {
+                            userMenu.classList.remove('active');
+                            document.removeEventListener('click', closeMenu);
+                        }
+                    });
+                });
+            }
+            
+            // Check premium status
+            function checkPremiumStatus() {
+                const premiumStatus = document.getElementById('premiumStatus');
+                if (!premiumStatus) return;
+                
+                fetch('/check_payment_status')
+                    .then(response => response.json())
+                    .then(data => {
+                        const premiumLabel = premiumStatus.querySelector('.premium-label');
+                        
+                        if (data.hasPaid) {
+                            premiumStatus.classList.add('premium-active');
+                            premiumLabel.textContent = 'Premium Active';
+                        } else {
+                            premiumStatus.classList.remove('premium-active');
+                            premiumLabel.textContent = 'Upgrade to Premium';
+                            premiumStatus.onclick = function() {
+                                window.location.href = '/#pricing';
+                            };
+                            premiumStatus.style.cursor = 'pointer';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking premium status:', error);
+                        const premiumLabel = premiumStatus.querySelector('.premium-label');
+                        premiumLabel.textContent = 'Status Unavailable';
+                    });
+            }
+            
+            // Run premium status check if user is logged in
+            if (document.getElementById('premiumStatus')) {
+                checkPremiumStatus();
+            }
+            
+            // Logout function
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to log out?')) {
+                        window.location.href = '/logout';
+                    }
+                });
+            }
+            
+            // Delete account function
+            const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+            if (deleteAccountBtn) {
+                deleteAccountBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // First confirmation dialog
+                    if (confirm('WARNING: Are you sure you want to delete your account? This will permanently erase ALL your data and cannot be undone.')) {
+                        // Second confirmation dialog with additional verification
+                        const verification = prompt('Please type "DELETE" to confirm you want to permanently delete your account and all your journals.');
+                        
+                        if (verification === 'DELETE') {
+                            // Show loading state
+                            deleteAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                            deleteAccountBtn.style.pointerEvents = 'none';
+                            
+                            // Send request to delete account
+                            fetch('/delete_account', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Your account has been successfully deleted. You will be redirected to the homepage.');
+                                    // Clear any stored data
+                                    localStorage.removeItem('memoraPremium');
+                                    localStorage.removeItem('selectedJournal');
+                                    sessionStorage.removeItem('journalContent');
+                                    
+                                    // Redirect to homepage
+                                    window.location.href = '/';
+                                } else {
+                                    alert('Error: ' + data.message);
+                                    // Reset button state
+                                    deleteAccountBtn.innerHTML = '<i class="fas fa-user-slash"></i> Delete Account';
+                                    deleteAccountBtn.style.pointerEvents = 'auto';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting your account. Please try again later.');
+                                // Reset button state
+                                deleteAccountBtn.innerHTML = '<i class="fas fa-user-slash"></i> Delete Account';
+                                deleteAccountBtn.style.pointerEvents = 'auto';
+                            });
+                        } else if (verification !== null) {
+                            alert('Verification failed. Account deletion canceled.');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
