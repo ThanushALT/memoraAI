@@ -1,7 +1,7 @@
 flask==2.2.2  # Latest stable version
 werkzeug==2.2.2  # Latest compatible version
 bcrypt==3.2.0
-groq==0.4.0
+groq==0.3.0  # A version that is likely to work without the proxies argument issue.
 beautifulsoup4==4.10.0
 requests
 gunicorn
